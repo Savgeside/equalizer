@@ -31,6 +31,8 @@ def load_opus_lib(opus_libs=OPUS_LIBS):
                        (', '.join(opus_libs)))
 load_opus_lib()
 
+in_voice=[]
+
 @client.event
 async def on_ready():
     print("Ready")
