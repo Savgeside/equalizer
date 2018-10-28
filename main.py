@@ -6,9 +6,28 @@ import requests
 import asyncio
 from discord.ext import commands
 
-TOKEN = "NTA2MTE2Nzk0NzUxMjU0NTM5.Drddiw.C_gCrA99x9rVj6qfN0ZK1z6eOi8"
 
 client = commands.Bot(command_prefix="=")
+
+from discord import opus
+OPUS_LIBS = ['libopus-0.x86.dll', 'libopus-0.x64.dll',
+             'libopus-0.dll', 'libopus.so.0', 'libopus.0.dylib']
+
+
+def load_opus_lib(opus_libs=OPUS_LIBS):
+    if opus.is_loaded():
+        return True
+
+    for opus_lib in opus_libs:
+            try:
+                opus.load_opus(opus_lib)
+                return
+            except OSError:
+                pass
+
+    raise RuntimeError('Could not load an opus lib. Tried %s' %
+                       (', '.join(opus_libs)))
+load_opus_lib()
 
 @client.event
 async def on_ready():
@@ -66,12 +85,39 @@ async def reload(ctx):
                 await client.say('<:error:506132126610227200> **​{}** cannot be reloaded. **[{}]**'.format(extension, error))
     else:
         await client.say("**You can't use this. My creator can only use this.**")
+        
+ 
+
+@client.command(pass_context=True)
+async def join(ctx):
+    channel = ctx.message.author.voice.voice_channel
+    await client.join_voice_channel(channel)
+    in_voice.append(ctx.message.server.id)
+    await client.say("<:check:506143689295396874> I have joined your voice channel!")
+    
+@client.command(pass_context=True)
+async def leave(ctx):
+    server=ctx.message.server
+    voice_client=client.voice_client_in(server)
+    await voice_client.disconnect()
+    await client.say("<:check:506143689295396874> I have left your voice channel!")
+    
+
+@client.command(pass_context=True)
+async def play(ctx, *, url):
+    opts = {
+        'default_search': 'auto',
+        'quiet': True,
+    }  # youtube_dl options
+
 
     
-    
-
-
+    server = ctx.message.server
+    voice_client = client.voice_client_in(server)
+    player = await voice.create_ytdl_player(url, ytdl_options=opts)
+    players[server.id] = player
+    player.start()
         
     
 
-client.run(TOKEN)
+client.run(os.environ['TOKEN'])
