@@ -4,6 +4,8 @@ import random
 import datetime
 import requests
 import asyncio
+import youtube_dl
+import os
 from discord.ext import commands
 
 
