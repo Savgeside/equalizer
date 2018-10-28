@@ -126,14 +126,17 @@ async def play(ctx, *, url):
     player = await voice.create_ytdl_player(url, ytdl_options=opts)
     players[server.id] = player
     player.start()
+    await client.say(f":notes: Now Playing - ``{player.title}``")
     
 @client.command(pass_context=True)
 async def pause(ctx):
     players[ctx.message.server.id].pause()
+    await client.say(":pause_button: Paused")
 
 @client.command(pass_context=True)
 async def resume(ctx):
     players[ctx.message.server.id].resume()
+    await client.say(":play_pause:  Resumed")
         
     
 
