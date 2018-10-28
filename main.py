@@ -33,6 +33,11 @@ load_opus_lib()
 
 in_voice=[]
 
+
+players = {}
+songs = {}
+playing = {}
+
 @client.event
 async def on_ready():
     print("Ready")
@@ -117,7 +122,7 @@ async def play(ctx, *, url):
 
     
     server = ctx.message.server
-    voice_client = client.voice_client_in(server)
+    voice = client.voice_client_in(server)
     player = await voice.create_ytdl_player(url, ytdl_options=opts)
     players[server.id] = player
     player.start()
